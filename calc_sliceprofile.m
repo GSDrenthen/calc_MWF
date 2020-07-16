@@ -1,3 +1,21 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Calculate the T2 basis set (T2 decay profiles for varying T2 times)
+%
+% inputs:
+%	te		1-D vector of echo times, (e.g.: 10:10:320)
+%	B1_err		1-D vector of B1 error range, (e.g.: 0.5:0.01:1)
+%	T2Times		1-D vector of T2 times, (e.g.: logspace(log10(te(1)*1.5),log10(2000),1000))
+%
+% outputs
+%	T2Basis		3-D array of T2 decay profiles (TE, T2 times, B1 errors)
+%
+% dependencies:
+%	cp_cpmg_epg_domain_fplus_fminus.m (10.1002/jmri.24619)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 function T2Basis = calc_sliceprofile(te,B1_err,T2Times)
 	Sinc_Gauss = [66; -138; -359; -595; -845; -1107; -1378; -1658; -1943; -2230;
 	-2517; -2800; -3076; -3341; -3592; -3824; -4034; -4217; -4370; -4488;
