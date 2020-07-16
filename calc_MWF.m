@@ -1,17 +1,25 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Calculate Myelin-Water Fraction from mutli-echo GRASE data
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Calculate Myelin-Water Fraction from 2-D myelin-water imaging data with a 
+% slice profile correction using the fourier transform of the excitation pulse
+%
+% inputs:
+%	MWI_data	4-D array of myelin-water imaging data (X,Y,Z,TE)
+%	te		1-D vector of echo times, (e.g.: 10:10:320)
+%	B1_err		1-D vector of B1 error range, (e.g.: 0.5:0.01:1)
+%
+% output:
+%	MWF		3-D array of myelin-water fraction (X,Y,Z)
+%	B1_map		3-D array of B1 error map (X,Y,Z)
+%	
 % dependencies:
-%  SVD_filter.m
-%  RegNNLS.m
-%  calc_sliceprofile.m
-% 
+%	SVD_filter.m		(10.1016/j.mri.2006.03.006)
+%	calc_sliceprofile.m 	(https://github.com/GSDrenthen/calc_MWF/blob/master/calc_sliceprofile.m)
+%  	NonNeg_OMP.m 		(https://github.com/GSDrenthen/Non-Negative-OMP/blob/master/NonNeg_OMP.m)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
-	addpath('dependencies')
-
-	% MWI_data -> X,Y,Z,TE
-
 	H = fspecial('gaussian',[9 9], 1);
 	%H = fspecial3('gaussian',[9 9 9], 1);
 
@@ -24,8 +32,7 @@ function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
 
 	MWI_data = MWI_data + min(MWI_data(:));
 	
-	T2Times = logspace(log10(te(1)*1.5),log10(2000),120);
-	%T2Times = logspace(log10(te(1)*1.5),log10(2000),1000);
+	T2Times = logspace(log10(te(1)*1.5),log10(2000),1000);
 	T2Basis = calc_sliceprofile(te,B1_err,T2Times);
 
 	MWF = zeros(size(MWI_data,1),size(MWI_data,2),size(MWI_data,3));
@@ -49,9 +56,7 @@ function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
 	for zz = 1:size(MWI_data,3)
 		for xx = 1:size(MWI_data,1)
 			for yy = 1:size(MWI_data,2)
-				x = RegNNLS(T2Basis(:,:,B1_map(xx,yy,zz)),squeeze(MWI_data(xx,yy,zz,:)),1.02,1.025);
-				MWF(xx,yy,zz) = sum(x(T2Times<40)) / sum(x);
-				MWF(xx,yy,zz) = NonNeg_OMP(T2Basis(:,:,B1_map(xx,yy,zz)),squeeze(MWI_data(xx,yy,zz,:)),T2Times,10);
+				MWF(xx,yy,zz) = NonNeg_OMP(T2Basis(:,:,B1_map(xx,yy,zz)),squeeze(MWI_data(xx,yy,zz,:)),T2Times,20);
 			end
 		end
 	end
