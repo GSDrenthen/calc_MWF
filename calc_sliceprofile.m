@@ -1,6 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Calculate the T2 basis set (T2 decay profiles for varying T2 times)
+% Note that this script is specifically designed for Philips 2D SMS GRASE imaging
+% using a am_sg_150_100_167 (Sinc-Gauss) excitation pulse.
+% For different pulse seqeunces, the code has to be adapted.
 %
 % inputs:
 %	te		1-D vector of echo times, (e.g.: 10:10:320)
