@@ -20,7 +20,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
-	H = fspecial('gaussian',[9 9], 1);
+	H = fspecial('gaussian',[3 3], 1);
 	%H = fspecial3('gaussian',[9 9 9], 1);
 
 	for slice = 1:length(MWI_data(1,1,:,1))
