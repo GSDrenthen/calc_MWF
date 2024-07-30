@@ -30,7 +30,7 @@ function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
 		end
 	end
 
-	MWI_data = MWI_data + min(MWI_data(:));
+	MWI_data = abs(MWI_data);
 	
 	T2Times = logspace(log10(te(1)*1.5),log10(2000),1000);
 	T2Basis = calc_sliceprofile(te,B1_err,T2Times);
@@ -43,9 +43,7 @@ function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
 			for yy = 1:size(MWI_data,2)
 				for B1n = 1:1:length(B1_err)
 					[tmp] = lsqnonneg(T2Basis(:,:,B1n),squeeze(MWI_data(xx,yy,zz,:)));
-					if size(tmp,1) == 121
-						res(B1n,:) = (squeeze(MWI_data(xx,yy,zz,:)) - T2Basis(:,:,B1n)*tmp);
-					end
+					res(B1n,:) = (squeeze(MWI_data(xx,yy,zz,:)) - T2Basis(:,:,B1n)*tmp);
 				end  
 				[~,B1n] = min(sum(abs(res(:,:)),2));    
 				B1_map(xx,yy,zz) = B1n;
