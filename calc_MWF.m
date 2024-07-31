@@ -5,7 +5,7 @@
 %
 % inputs:
 %	MWI_data	4-D array of myelin-water imaging data (X,Y,Z,TE)
-%	te		1-D vector of echo times, (e.g.: 10:10:320)
+%	te		1-D vector of echo times, (e.g.: .010:.010:.320)
 %	B1_err		1-D vector of B1 error range, (e.g.: 0.5:0.01:1)
 %
 % output:
@@ -32,7 +32,7 @@ function [MWF, B1_map] = calc_MWF(MWI_data, te, B1_err)
 
 	MWI_data = abs(MWI_data);
 	
-	T2Times = logspace(log10(te(1)*1.5),log10(2000),1000);
+	T2Times = logspace(log10(te(1)*1.5),log10(2),1000);
 	T2Basis = calc_sliceprofile(te,B1_err,T2Times);
 
 	MWF = zeros(size(MWI_data,1),size(MWI_data,2),size(MWI_data,3));
